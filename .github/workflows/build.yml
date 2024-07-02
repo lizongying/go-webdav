@@ -1,0 +1,93 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build
+        run: |
+          bin := ./releases/webdav_server
+          path := ./cmd/webdav_server
+          
+          go vet $(path)
+
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o ./releases/webdav_server ./cmd/webdav_server
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o $(bin)_linux_amd64 $(path)
+          GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags "-s -w" -o $(bin)_linux_arm64 $(path)
+          GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o $(bin)_darwin_amd64 $(path)
+          GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags "-s -w" -o $(bin)_darwin_arm64 $(path)
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o $(bin)_windows_amd64.exe $(path)
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset linux_amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./releases/webdav_server_linux_amd64
+          asset_name: webdav_server_linux_amd64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset linux_arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./releases/webdav_server_linux_arm64
+          asset_name: webdav_server_linux_arm64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset darwin_amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./releases/webdav_server_darwin_amd64
+          asset_name: webdav_server_darwin_amd64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset darwin_arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./releases/webdav_server_darwin_arm64
+          asset_name: webdav_server_darwin_arm64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset windows_amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./releases/webdav_server_windows_amd64.exe
+          asset_name: webdav_server_windows_amd64-${{ github.ref_name }}.exe
+          asset_content_type: application/octet-stream

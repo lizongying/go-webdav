@@ -1,0 +1,7 @@
+dirs:
+  - /movie/:/Users/lizongying/Movies/
+  - /music/:/Users/lizongying/Music/
+server:
+  host: http://username:password@0.0.0.0:9876
+  cert: /Users/lizongying/IdeaProjects/go-webdav/static/tls/server_self_crt.pem
+  key: /Users/lizongying/IdeaProjects/go-webdav/static/tls/server_self_key.pem

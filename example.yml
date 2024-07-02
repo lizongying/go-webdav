@@ -1,0 +1,4 @@
+dirs:
+  - /movie/:~/Movies/
+server:
+  host: http://username:password@0.0.0.0:9876
