@@ -38,6 +38,7 @@ go run ./tools/tls_generator/*.go -s -h webdav -i 10.0.2.2
 
 # http
 curl -v -k -u username:password -X PROPFIND http://localhost:9876/movie/ -o out.xml
+ffplay http://username:password@localhost:9876/movie/小蒙牛满月了.m4v
 
 # https
 curl -v -k -u username:password -X PROPFIND https://localhost:9876/music/ -o out.xml

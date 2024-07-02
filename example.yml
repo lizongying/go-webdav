@@ -1,4 +1,4 @@
 dirs:
-  - /movie/:~/Movies/
+  - /movie/:/Users/lizongying/Movies/
 server:
   host: http://username:password@0.0.0.0:9876
