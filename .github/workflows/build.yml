@@ -27,6 +27,7 @@ jobs:
           GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags "-s -w" -o ./releases/webdav_server_darwin_arm64 ./cmd/webdav_server
           GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o ./releases/webdav_server_windows_amd64.exe ./cmd/webdav_server
 
+      # https://github.com/lizongying/go-webdav/settings/actions Workflow permissions
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
